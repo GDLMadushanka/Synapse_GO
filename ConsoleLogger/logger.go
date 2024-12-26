@@ -49,5 +49,13 @@ func InfoLog(message string) {
 }
 
 func DebugLog(message string) {
-	fmt.Println(colors[0] + "DEBUG: " + message + reset)
+	fmt.Println(colors[1] + "DEBUG: " + message + reset)
+}
+
+func ErrorLog(message string) {
+	fmt.Println(colors[0] + "ERROR: " + message + reset)
+}
+
+func MediatorErrorLog(mediatorName string, fileName string, lineNo int, message string) {
+	fmt.Println(colors[5] + "Error occurred in " + mediatorName + " mediator at " + fileName + ":" + fmt.Sprint(lineNo) + " " + message + reset)
 }

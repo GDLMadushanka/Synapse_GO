@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"test/dispatcher"
-	"test/pogo"
+	"synapse/artifacts"
+	"synapse/consolelogger"
+	"synapse/dispatcher"
 )
 
 func DeployAPIs(r *dispatcher.Router) {
 
-	files, err := os.ReadDir("Artifacts")
+	files, err := os.ReadDir("Deploy")
 	if err != nil {
 		fmt.Println("Error reading directory:", err)
 		return
@@ -22,7 +23,7 @@ func DeployAPIs(r *dispatcher.Router) {
 			continue
 		}
 
-		xmlFile, err := os.Open("Artifacts/" + file.Name())
+		xmlFile, err := os.Open("Deploy/" + file.Name())
 		if err != nil {
 			fmt.Println("Error opening file:", err)
 			continue
@@ -35,7 +36,10 @@ func DeployAPIs(r *dispatcher.Router) {
 			continue
 		}
 
-		var api pogo.API
+		consolelogger.InfoLog("Deploying API from " + file.Name())
+
+		var api artifacts.API
+		api.FileName = file.Name()
 		if err := xml.Unmarshal(data, &api); err != nil {
 			fmt.Println("Error unmarshaling XML:", err)
 			continue
@@ -44,6 +48,9 @@ func DeployAPIs(r *dispatcher.Router) {
 		// process the API
 		for _, resource := range api.Resources {
 			r.AddRoute(resource.Methods, api.Context+resource.URITemplate, resource.DispatchResource)
+			resource.InSequence.SetFileName(api.FileName)
 		}
+
+		consolelogger.InfoLog("API " + api.Name + " deployed successfully")
 	}
 }

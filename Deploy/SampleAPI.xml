@@ -2,16 +2,16 @@
 <api context="/context" name="apiName" xmlns="http://ws.apache.org/ns/synapse">
     <resource methods="GET" uri-template="/">
         <inSequence>
-            <log category="INFO">
+            <log category="INFO2">
                 <message>test info log</message>
             </log>
             <variable name="asdf" type="STRING" value="asdf"/>
             <log category="DEBUG">
                 <message>test debug log</message>
             </log>
-            <payloadFactory description="Construct payload for addition operation" media-type="json">
+            <payloadFactory description="Construct payload for addition operation" media-type="xml">
                 <format>
-                    {"response":"Hello World"}
+                    <hello>Lahiru</hello>
                 </format>
             </payloadFactory>
             <respond/>

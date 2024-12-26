@@ -11,3 +11,7 @@ type SynapseContext struct {
 	Message    string
 	Headers    map[string]string
 }
+
+type ConfigurationContext struct {
+	Properties map[string]string
+}

@@ -2,7 +2,7 @@ package dispatcher
 
 import (
 	"net/http"
-	"test/consolelogger"
+	"synapse/consolelogger"
 )
 
 type Route struct {

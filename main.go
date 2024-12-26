@@ -2,9 +2,9 @@ package main
 
 import (
 	"net/http"
-	"test/consolelogger"
-	"test/deployer"
-	"test/dispatcher"
+	"synapse/consolelogger"
+	"synapse/deployer"
+	"synapse/dispatcher"
 	"time"
 )
 
@@ -15,5 +15,8 @@ func main() {
 	deployer.DeployAPIs(&r)
 	elapsed := time.Since(start)
 	consolelogger.InfoLog("Server started in " + elapsed.String())
-	http.ListenAndServe(":8080", &r)
+	err := http.ListenAndServe(":8080", &r)
+	if err != nil {
+		consolelogger.ErrorLog("Error starting server: " + err.Error())
+	}
 }
