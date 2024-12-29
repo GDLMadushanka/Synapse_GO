@@ -6,13 +6,14 @@ import (
 	"io"
 	"os"
 	"synapse/artifacts"
+	"synapse/configurationcontext"
 	"synapse/consolelogger"
 	"synapse/dispatcher"
 )
 
-func DeployAPIs(r *dispatcher.Router) {
+func DeployAPIs(router *dispatcher.Router, confContext *configurationcontext.ConfigurationContext) {
 
-	files, err := os.ReadDir("Deploy")
+	files, err := os.ReadDir("Deploy/APIs")
 	if err != nil {
 		fmt.Println("Error reading directory:", err)
 		return
@@ -23,7 +24,7 @@ func DeployAPIs(r *dispatcher.Router) {
 			continue
 		}
 
-		xmlFile, err := os.Open("Deploy/" + file.Name())
+		xmlFile, err := os.Open("Deploy/APIs/" + file.Name())
 		if err != nil {
 			fmt.Println("Error opening file:", err)
 			continue
@@ -45,12 +46,29 @@ func DeployAPIs(r *dispatcher.Router) {
 			continue
 		}
 
-		// process the API
-		for _, resource := range api.Resources {
-			r.AddRoute(resource.Methods, api.Context+resource.URITemplate, resource.DispatchResource)
-			resource.InSequence.SetFileName(api.FileName)
+		// check the api already deployed
+		apiAlreadyDeployed := false
+		_, ok := confContext.ApiMap[api.Name]
+		if ok {
+			consolelogger.ErrorLog("API " + api.Name + " already deployed")
+			continue
+		}
+		for _, deployedAPI := range confContext.ApiMap {
+			if deployedAPI.Context == api.Context {
+				consolelogger.ErrorLog("API " + deployedAPI.Name + " already deployed with same context : " + api.Context)
+				apiAlreadyDeployed = true
+			}
+		}
+		if apiAlreadyDeployed {
+			continue
 		}
 
+		// process the API
+		for _, resource := range api.Resources {
+			router.AddRoute(resource.Methods, api.Context+resource.URITemplate, resource.DispatchResource)
+			resource.InSequence.SetFileName(api.FileName)
+		}
+		confContext.AddAPI(api)
 		consolelogger.InfoLog("API " + api.Name + " deployed successfully")
 	}
 }

@@ -11,7 +11,9 @@ type RespondMediator struct {
 }
 
 func (l *RespondMediator) Execute(context *synapsecontext.SynapseContext) bool {
-	fmt.Fprintf(context.Response, context.Message)
+	// Update content type header
+	context.Response.Header().Set("Content-Type", context.Headers["Content-Type"])
+	fmt.Fprintf(context.Response, string(context.Message.RawPayload))
 	return true
 }
 

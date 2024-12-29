@@ -33,12 +33,16 @@ func (resource *Resource) DispatchResource(w http.ResponseWriter, request *http.
 		return
 	}
 
+	msg := synapsecontext.Message{
+		ContentType: headers["Content-Type"],
+		RawPayload:  bodyBytes,
+	}
 	// Create the mssage context
 	var context = synapsecontext.SynapseContext{
 		Request:    request,
 		Response:   w,
 		Properties: make(map[string]string),
-		Message:    string(bodyBytes),
+		Message:    msg,
 		Headers:    headers,
 	}
 	resource.InSequence.Execute(&context)

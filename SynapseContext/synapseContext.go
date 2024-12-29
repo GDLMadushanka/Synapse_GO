@@ -8,10 +8,15 @@ type SynapseContext struct {
 	Properties map[string]string
 	Response   http.ResponseWriter
 	Request    *http.Request
-	Message    string
+	Message    Message
 	Headers    map[string]string
 }
 
 type ConfigurationContext struct {
 	Properties map[string]string
+}
+
+type Message struct {
+	RawPayload  []byte
+	ContentType string
 }
