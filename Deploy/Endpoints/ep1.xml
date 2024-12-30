@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <endpoint name="ep1" xmlns="http://ws.apache.org/ns/synapse">
-    <http method="get" uri-template="http://asdfasdf.com">
+    <http method="get" uri-template="https://run.mocky.io/v3/f5a79562-ea68-4be1-99bb-28ec65fcd361">
     </http>
 </endpoint>

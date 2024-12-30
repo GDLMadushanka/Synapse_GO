@@ -6,12 +6,11 @@ import (
 	"io"
 	"os"
 	"synapse/artifacts"
-	"synapse/configurationcontext"
 	"synapse/consolelogger"
 	"synapse/dispatcher"
 )
 
-func DeployEndpoints(router *dispatcher.Router, confContext *configurationcontext.ConfigurationContext) {
+func DeployEndpoints(router *dispatcher.Router, confContext *artifacts.ArtifactInfo) {
 
 	files, err := os.ReadDir("Deploy/Endpoints")
 	if err != nil {

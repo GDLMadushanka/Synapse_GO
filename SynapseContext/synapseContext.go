@@ -12,10 +12,6 @@ type SynapseContext struct {
 	Headers    map[string]string
 }
 
-type ConfigurationContext struct {
-	Properties map[string]string
-}
-
 type Message struct {
 	RawPayload  []byte
 	ContentType string

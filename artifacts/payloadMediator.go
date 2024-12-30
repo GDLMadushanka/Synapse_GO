@@ -1,4 +1,4 @@
-package mediators
+package artifacts
 
 import (
 	"encoding/xml"

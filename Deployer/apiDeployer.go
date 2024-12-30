@@ -6,12 +6,11 @@ import (
 	"io"
 	"os"
 	"synapse/artifacts"
-	"synapse/configurationcontext"
 	"synapse/consolelogger"
 	"synapse/dispatcher"
 )
 
-func DeployAPIs(router *dispatcher.Router, confContext *configurationcontext.ConfigurationContext) {
+func DeployAPIs(router *dispatcher.Router, confContext *artifacts.ArtifactInfo) {
 
 	files, err := os.ReadDir("Deploy/APIs")
 	if err != nil {

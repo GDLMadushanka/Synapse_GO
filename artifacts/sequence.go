@@ -2,12 +2,11 @@ package artifacts
 
 import (
 	"encoding/xml"
-	"synapse/artifacts/mediators"
 	"synapse/synapsecontext"
 )
 
 type Sequence struct {
-	MediatorList []mediators.Mediator
+	MediatorList []Mediator
 	LineNo       int
 	FileName     string
 }
@@ -24,7 +23,7 @@ func (v *Sequence) Execute(context *synapsecontext.SynapseContext) bool {
 
 func (v *Sequence) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	v.FileName = ""
-	var mediatorList []mediators.Mediator
+	var mediatorList []Mediator
 
 	for {
 		t, err := d.Token()
@@ -34,10 +33,10 @@ func (v *Sequence) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 		line, _ := d.InputPos()
 		switch se := t.(type) {
 		case xml.StartElement:
-			var mediator mediators.Mediator
+			var mediator Mediator
 			switch se.Name.Local {
 			case "log":
-				logMediator := &mediators.LogMediator{}
+				logMediator := &LogMediator{}
 				if err := d.DecodeElement(logMediator, &se); err != nil {
 					return err
 				}
@@ -45,26 +44,33 @@ func (v *Sequence) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 				logMediator.LineNo = line
 				mediator = logMediator
 			case "variable":
-				variableMediator := &mediators.VariableMediator{}
+				variableMediator := &VariableMediator{}
 				if err := d.DecodeElement(variableMediator, &se); err != nil {
 					return err
 				}
 				variableMediator.LineNo = line
 				mediator = variableMediator
 			case "respond":
-				respondMediator := &mediators.RespondMediator{}
+				respondMediator := &RespondMediator{}
 				if err := d.DecodeElement(respondMediator, &se); err != nil {
 					return err
 				}
 				respondMediator.LineNo = line
 				mediator = respondMediator
 			case "payloadFactory":
-				payloadMediator := &mediators.PayloadMediator{}
+				payloadMediator := &PayloadMediator{}
 				if err := d.DecodeElement(payloadMediator, &se); err != nil {
 					return err
 				}
 				payloadMediator.LineNo = line
 				mediator = payloadMediator
+			case "call":
+				callMediator := &CallMediator{}
+				if err := d.DecodeElement(callMediator, &se); err != nil {
+					return err
+				}
+				callMediator.LineNo = line
+				mediator = callMediator
 			}
 
 			if mediator != nil {
