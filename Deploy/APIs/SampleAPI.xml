@@ -2,21 +2,22 @@
 <api context="/context" name="apiName" xmlns="http://ws.apache.org/ns/synapse">
     <resource methods="GET" uri-template="/">
         <inSequence>
-            <call>
-                <endpoint key="ep1"/>
-            </call>
-            <!-- <log category="INFO2">
+           
+            <log category="INFO">
                 <message>test info log</message>
             </log>
             <variable name="asdf" type="STRING" value="asdf"/>
-            <log category="DEBUG">
+            <!-- <log category="DEBUG">
                 <message>test debug log</message>
-            </log>
+            </log> -->
             <payloadFactory description="Construct payload for addition operation" media-type="xml">
                 <format>
                     <hello>Lahiru</hello>
                 </format>
-            </payloadFactory> -->
+            </payloadFactory>
+            <call>
+                <endpoint key="ep1"/>
+            </call>
             <respond/>
         </inSequence>
         <faultSequence>

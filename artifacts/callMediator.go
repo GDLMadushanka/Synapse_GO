@@ -7,6 +7,7 @@ import (
 	"strings"
 	"synapse/consolelogger"
 	"synapse/synapsecontext"
+	"time"
 )
 
 type CallMediator struct {
@@ -17,6 +18,15 @@ type CallMediator struct {
 
 type CallEndpoint struct {
 	Key string `xml:"key,attr"`
+}
+
+var sharedClient = &http.Client{
+	Transport: &http.Transport{
+		MaxIdleConns:        1000,
+		MaxConnsPerHost:     1000,
+		MaxIdleConnsPerHost: 1000,
+		IdleConnTimeout:     90 * time.Second,
+	},
 }
 
 func (l *CallMediator) Execute(context *synapsecontext.SynapseContext) bool {
@@ -33,10 +43,9 @@ func (l *CallMediator) Execute(context *synapsecontext.SynapseContext) bool {
 		return false
 	}
 	req.Header.Set("Content-Type", context.Message.ContentType)
-	client := &http.Client{}
 
 	// Send the request
-	resp, err := client.Do(req)
+	resp, err := sharedClient.Do(req)
 	if err != nil {
 		consolelogger.ErrorLog("failed to send request: " + err.Error())
 		return false

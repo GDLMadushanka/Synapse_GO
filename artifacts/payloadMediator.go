@@ -34,8 +34,8 @@ func (l *PayloadMediator) Execute(context *synapsecontext.SynapseContext) bool {
 			consolelogger.ErrorLog("Error occurred while creating the payload in payload mediator. Invalid JSON format")
 			return false
 		} else {
-			msg := synapsecontext.Message{RawPayload: []byte(payload), ContentType: "application/json"}
-			context.Message = msg
+			context.Message.RawPayload = []byte(payload)
+			context.Message.ContentType = "application/json"
 			context.Headers["Content-Type"] = "application/json"
 		}
 	} else if l.MediaType == "xml" {
@@ -43,8 +43,8 @@ func (l *PayloadMediator) Execute(context *synapsecontext.SynapseContext) bool {
 			consolelogger.ErrorLog("Error occurred while creating the payload in payload mediator. Invalid XML format")
 			return false
 		} else {
-			msg := synapsecontext.Message{RawPayload: []byte(payload), ContentType: "application/xml"}
-			context.Message = msg
+			context.Message.ContentType = "application/xml"
+			context.Message.RawPayload = []byte(payload)
 			context.Headers["Content-Type"] = "application/xml"
 		}
 	} else {

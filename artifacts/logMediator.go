@@ -15,11 +15,11 @@ type LogMediator struct {
 func (l *LogMediator) Execute(context *synapsecontext.SynapseContext) bool {
 	switch l.Category {
 	case "DEBUG":
-		consolelogger.DebugLog(l.Message)
+		go consolelogger.DebugLog(l.Message)
 	case "INFO":
-		consolelogger.InfoLog(l.Message)
+		go consolelogger.InfoLog(l.Message)
 	default:
-		consolelogger.MediatorErrorLog("Log", l.FileName, l.LineNo, "Invalid log category")
+		go consolelogger.MediatorErrorLog("Log", l.FileName, l.LineNo, "Invalid log category")
 	}
 	return true
 }

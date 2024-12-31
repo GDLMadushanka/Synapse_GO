@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"runtime"
 	"synapse/artifacts"
 	"synapse/consolelogger"
 	"synapse/deployer"
@@ -10,6 +11,7 @@ import (
 )
 
 func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	start := time.Now()
 	consolelogger.PrintWelcomeMessage()
 	router := dispatcher.Router{}

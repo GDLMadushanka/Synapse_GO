@@ -2,44 +2,29 @@ package dispatcher
 
 import (
 	"net/http"
-	"synapse/consolelogger"
 )
 
-type Route struct {
-	Method  string
-	Pattern string
-	Handler http.HandlerFunc
-}
-
 type Router struct {
-	Routes []Route
+	Routes map[string]map[string]http.HandlerFunc // path -> method -> handler
 }
 
-// ServeHTTP makes Router implement the http.Handler interface.
-// It finds a matching route for the incoming request, then calls the handler.
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	path := req.URL.Path
-	method := req.Method
-
-	// Try to match a route
-	for _, route := range r.Routes {
-		if route.Method == method && route.Pattern == path {
-			route.Handler(w, req)
+	if methodHandlers, ok := r.Routes[req.URL.Path]; ok {
+		if handler, ok := methodHandlers[req.Method]; ok {
+			handler(w, req)
 			return
 		}
 	}
-
-	// If no route was matched, return 404
 	http.NotFound(w, req)
 }
 
 // addRoute is a helper to add a new route
 func (r *Router) AddRoute(method, pattern string, handler http.HandlerFunc) {
-	route := Route{
-		Method:  method,
-		Pattern: pattern,
-		Handler: handler,
+	if r.Routes == nil {
+		r.Routes = make(map[string]map[string]http.HandlerFunc)
 	}
-	consolelogger.DebugLog("Adding route: " + method + " " + pattern)
-	r.Routes = append(r.Routes, route)
+	if r.Routes[pattern] == nil {
+		r.Routes[pattern] = make(map[string]http.HandlerFunc)
+	}
+	r.Routes[pattern][method] = handler
 }

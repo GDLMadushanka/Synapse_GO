@@ -1,7 +1,6 @@
 package artifacts
 
 import (
-	"io"
 	"net/http"
 	"synapse/synapsecontext"
 )
@@ -26,23 +25,13 @@ func (resource *Resource) DispatchResource(w http.ResponseWriter, request *http.
 	for name, values := range request.Header {
 		headers[name] = values[0]
 	}
-	// Read request body
-	bodyBytes, err := io.ReadAll(request.Body)
-	if err != nil {
-		http.Error(w, "Failed to read request body", http.StatusBadRequest)
-		return
-	}
 
-	msg := synapsecontext.Message{
-		ContentType: headers["Content-Type"],
-		RawPayload:  bodyBytes,
-	}
 	// Create the mssage context
 	var context = synapsecontext.SynapseContext{
 		Request:    request,
 		Response:   w,
 		Properties: make(map[string]string),
-		Message:    msg,
+		Message:    synapsecontext.Message{},
 		Headers:    headers,
 	}
 	resource.InSequence.Execute(&context)
